@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard | Budget_Mantri</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .expense-card {
+      border-top: 1px solid #ccc;
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+    .expense-actions {
+      margin-top: 5px;
+    }
+    .expense-actions button {
+      margin-right: 10px;
+    }
+    canvas {
+      max-width: 300px;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📊 Dashboard</h1>
+    <p id="welcomeUser"></p>
+
+    <p><b>Monthly Income:</b> ₹<span id="income">0</span></p>
+    <p><b>Saving Goal:</b> ₹<span id="goal">0</span></p>
+    <p><b>Total Expenses:</b> ₹<span id="total">0</span></p>
+    <p><b>Remaining Balance:</b> ₹<span id="balance">0</span></p>
+
+    <h3>Expense Breakdown</h3>
+    <div id="expenseList"></div>
+
+    <canvas id="expenseChart"></canvas>
+
+    <br />
+    <a href="index.html"><button>🔙 Back to Entry</button></a>
+    <button onclick="clearAllData()">🗑️ Clear All Data</button>
+    <button onclick="logout()" style="background-color:red; color:white; margin-top: 10px;">🚪 Logout</button>
+  </div>
+
+  <script>
+    const user = localStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("welcomeUser").innerText = `Welcome, ${user}!`;
+    }
+
+    const income = parseFloat(localStorage.getItem("income")) || 0;
+    const goal = parseFloat(localStorage.getItem("goal")) || 0;
+    let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+
+    document.getElementById("income").innerText = income;
+    document.getElementById("goal").innerText = goal;
+
+    function renderDashboard() {
+      let total = 0;
+      let breakdownHTML = "";
+      const categoryTotals = {};
+
+      expenses.forEach((exp, index) => {
+        total += exp.amount;
+        const cat = exp.category || "Others";
+        categoryTotals[cat] = (categoryTotals[cat] || 0) + exp.amount;
+
+        breakdownHTML += `
+          <div class="expense-card">
+            <b>${exp.title}</b> - ₹${exp.amount} (${exp.category || ""})
+            <br>${exp.date} | Note: ${exp.note || ""}
+            <div class="expense-actions">
+              <button onclick="editExpense(${index})">✏️ Edit</button>
+              <button onclick="deleteExpense(${index})">🗑️ Delete</button>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById("total").innerText = total;
+      document.getElementById("balance").innerText = income - total;
+      document.getElementById("expenseList").innerHTML = breakdownHTML;
+
+      renderPieChart(categoryTotals);
+    }
+
+    function editExpense(index) {
+      const exp = expenses[index];
+      const newTitle = prompt("Edit Title:", exp.title);
+      const newAmount = parseFloat(prompt("Edit Amount:", exp.amount));
+      const newNote = prompt("Edit Note:", exp.note);
+      const newDate = prompt("Edit Date (yyyy-mm-dd):", exp.date);
+      const newCat = prompt("Edit Category:", exp.category);
+
+      if (!newTitle || isNaN(newAmount) || !newDate) return alert("Invalid input.");
+
+      expenses[index] = {
+        title: newTitle,
+        amount: newAmount,
+        note: newNote,
+        date: newDate,
+        category: newCat,
+      };
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      renderDashboard();
+    }
+
+    function deleteExpense(index) {
+      if (confirm("Delete this expense?")) {
+        expenses.splice(index, 1);
+        localStorage.setItem("expenses", JSON.stringify(expenses));
+        renderDashboard();
+      }
+    }
+
+    function renderPieChart(data) {
+      const ctx = document.getElementById("expenseChart").getContext("2d");
+      if (window.pieChart) window.pieChart.destroy(); // reset chart
+
+      window.pieChart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            data: Object.values(data),
+            backgroundColor: [
+              "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    function clearAllData() {
+      if (confirm("Clear all data?")) {
+        localStorage.removeItem("income");
+        localStorage.removeItem("goal");
+        localStorage.removeItem("expenses");
+        renderDashboard();
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
+
+    renderDashboard();
+  </script>
+</body>
+</html>

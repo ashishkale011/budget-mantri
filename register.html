@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | Budget_Mantri 2.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to right, #56ccf2, #2f80ed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .register-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 380px;
+      animation: fade-in 0.6s ease;
+    }
+
+    @keyframes fade-in {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .app-name {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #2f80ed;
+    }
+
+    .slogan {
+      font-size: 0.9rem;
+      margin-top: 4px;
+      margin-bottom: 20px;
+      color: #555;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .register-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #2f80ed;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .register-btn:hover {
+      background-color: #1c64d1;
+    }
+
+    .login-link {
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+
+    .login-link a {
+      color: #2f80ed;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .footer {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <div class="app-name">Budget_Mantri 2.0</div>
+    <div class="slogan">Smarter Spending Starts Here.</div>
+
+    <form onsubmit="handleRegister(event)">
+      <input type="text" placeholder="Full Name" required />
+      <input type="email" placeholder="Email Address" required />
+      <input type="text" placeholder="Username" required />
+      <input type="password" placeholder="Password" required />
+      <button class="register-btn" type="submit">Register</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+
+    <div class="footer">© 2025 Budget_Mantri</div>
+  </div>
+
+  <script>
+    function handleRegister(event) {
+      event.preventDefault(); // prevent page refresh
+
+      // Simulate success message for now
+      alert("Registration successful!");
+      window.location.href = "login.html"; // redirect to login
+    }
+  </script>
+</body>
+</html>

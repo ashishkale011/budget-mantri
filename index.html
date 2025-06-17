@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Budget_Mantri 2.0</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>💰 <b>Budget_Mantri 2.0</b></h1>
+    <p id="welcomeUser"></p>
+
+    <input type="number" id="income" placeholder="Monthly Income ₹" />
+    <input type="number" id="goal" placeholder="Saving Goal ₹" />
+    <button onclick="saveData()">Save</button>
+
+    <input type="text" id="title" placeholder="Expense Title (e.g. Food)" />
+    <input type="number" id="amount" placeholder="Amount (₹)" />
+    <input type="text" id="note" placeholder="Optional Note" />
+    <input type="date" id="date" />
+    <input type="text" id="category" placeholder="Category (e.g. Travel, Food)" />
+    <button onclick="addExpense()">Add Expense</button>
+
+    <br /><br />
+    <a href="dashboard.html">
+      <button style="background-color: blue; color: white;">📊 Go to Dashboard</button>
+    </a>
+  </div>
+
+  <script>
+    // Show logged-in user or redirect to login
+    window.onload = function () {
+      const user = localStorage.getItem("loggedInUser");
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        document.getElementById("welcomeUser").innerText = `Welcome, ${user}!`;
+      }
+    };
+
+    // Save income and goal
+    function saveData() {
+      const income = document.getElementById("income").value;
+      const goal = document.getElementById("goal").value;
+      localStorage.setItem("income", income);
+      localStorage.setItem("goal", goal);
+      alert("Saved!");
+    }
+
+    // Add new expense
+    function addExpense() {
+      const title = document.getElementById("title").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const note = document.getElementById("note").value;
+      const date = document.getElementById("date").value;
+      const category = document.getElementById("category").value;
+
+      if (!title || !amount || !date) {
+        alert("Please fill all required fields.");
+        return;
+      }
+
+      const newExpense = { title, amount, note, date, category };
+      let expenses = JSON.parse(localStorage.getItem("expenses")) || [];
+      expenses.push(newExpense);
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+      alert("Expense Added!");
+      document.getElementById("title").value = "";
+      document.getElementById("amount").value = "";
+      document.getElementById("note").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("category").value = "";
+    }
+  </script>
+</body>
+</html>
